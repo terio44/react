@@ -1,0 +1,1 @@
+export const travauxLib = 'https://api.travauxlib.com/api';
