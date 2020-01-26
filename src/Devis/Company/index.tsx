@@ -5,11 +5,7 @@ interface Props {
     company?: Company;
 }
 
-interface State {
-    company?: Company;
-}
-
-class CompanyComponent extends React.Component<Props, State> {
+class CompanyComponent extends React.Component<Props> {
     constructor(props: Props) {
         super(props);
         this.state = {
@@ -18,12 +14,16 @@ class CompanyComponent extends React.Component<Props, State> {
     }
 
     render() {
-        const { company } = this.state;
+        const { company } = this.props;
             return (
                 <div className="container-fluid">
-                    <div>{company?.name}</div>
-                    <div>{company?.email}</div>
-                    <div>{company?.city}</div>
+                    <div className="justify-content-end row">
+                        <div className="col-6">
+                            <div>{company?.name}</div>
+                            <div>{company?.email}</div>
+                            <div>{company?.city}</div>
+                        </div>
+                    </div>
                 </div>
             );
         }
