@@ -1,21 +1,18 @@
 import React from "react";
 import {Lot} from "../../types/devis";
+import {DisplayedValues} from "../../types/layout";
 
 interface Props {
     lot?: Lot;
 }
 
-interface State {
-    lot?: Lot;
-}
-
-class LotComponent extends React.Component<Props, State> {
+class LotComponent extends React.Component<Props> {
     constructor(props: Props) {
         super(props);
         this.state = {...props};
     }
 
-    static getDisplayedColumns() {
+    getDisplayedLigneColumns() {
         return {
             designation: 'Désignation',
             description: 'Description',
@@ -29,12 +26,23 @@ class LotComponent extends React.Component<Props, State> {
         }
     }
 
+    getDisplayedLot() {
+        return {
+            prixTotalHT: 'Prix Total Hors Taxes',
+            prixTotalTTC: 'Prix Total TTC'
+        } as DisplayedValues
+    }
+
     render() {
-        const { lot } = this.state;
-        const displayedColumns = LotComponent.getDisplayedColumns();
+        const { lot } = this.props;
+        const displayedColumns = this.getDisplayedLigneColumns();
+        const displayedLot = this.getDisplayedLot();
         return (
             <div className="container-fluid">
-                <div className="row mt-4">
+                <div className="row">
+                    <h4>{lot?.label}</h4>
+                </div>
+                <div className="row mt-4 table-responsive">
                     <table className="table table-striped">
                         <thead className="thead-dark">
                             <tr>
@@ -57,6 +65,18 @@ class LotComponent extends React.Component<Props, State> {
                         )}
                         </tbody>
                     </table>
+                </div>
+                <div className="row justify-content-end">
+                    <div className="list-group">
+                        {
+                            Object.keys(displayedLot).map((key, index) => {
+                                return <div key={key} className="row">
+                                    <span className="col-6 list-group-item">{displayedLot[key]}</span>
+                                    <span className="col-6 list-group-item">{(lot as {[K: string]: any})[key]}</span>
+                                </div>
+                            })
+                        }
+                    </div>
                 </div>
             </div>
         )

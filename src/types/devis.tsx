@@ -23,14 +23,29 @@ export interface Devis {
     showTotalFourniture: boolean;
 }
 
-export interface Lot {
+export interface Location {
+    uuid: string;
+    label: string;
+    surface: string;
+}
+
+export class Lot {
     label: string;
     lignes: Ligne[];
     prixTotalHT: number;
     prixTotalTTC: number;
+    uuid?: string;
+
+    constructor(label: string, uuid?: string, ) {
+        this.uuid = uuid ? uuid : undefined;
+        this.label = label;
+        this.lignes = [];
+        this.prixTotalHT = 0;
+        this.prixTotalTTC = 0;
+    }
 }
 
-export interface Ligne {
+export class Ligne {
     designation: string;
     description: string;
     prixUnitaireHT: number;
@@ -41,12 +56,36 @@ export interface Ligne {
     tauxTVA: number;
     montantTVA: number;
     prixTTC: number;
-    locationsDetails: {
-        locations: {quantite: number}[];
+    locationsDetails?: {
+        locations: {
+            quantite: number,
+            uuid: string
+        }[];
         additionalQuantity: number;
         quantityIsByLocation: boolean;
     };
 
+    constructor(ligne: Ligne, piece?: string) {
+        this.designation = ligne.designation;
+        this.description = ligne.description;
+        this.prixUnitaireHT = ligne.prixUnitaireHT;
+        this.prixPublicFournitureHT = ligne.prixPublicFournitureHT;
+        this.unite = ligne.unite;
+        this.tauxTVA = ligne.tauxTVA;
+        this.locationsDetails = undefined;
+        const location = ligne.locationsDetails?.locations.find(l => l.uuid === piece);
+        if(piece && location) {
+            this.quantite = location.quantite;
+            this.prixHT = ligne.prixHT/location.quantite;
+            this.montantTVA = ligne.montantTVA/location.quantite;
+            this.prixTTC = ligne.prixTTC/location.quantite;
+        } else {
+            this.quantite = ligne.quantite;
+            this.prixHT = ligne.prixHT;
+            this.montantTVA = ligne.montantTVA;
+            this.prixTTC = ligne.prixTTC;
+        }
+    }
 }
 
 export interface Deal {
@@ -86,7 +125,7 @@ export interface Company {
     isAutoEntrepreneur: boolean;
 }
 
-interface MontantTVA {
+export interface MontantTVA {
     taux: number;
     base: number;
     montant: number;

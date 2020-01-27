@@ -5,18 +5,14 @@ export interface Props {
     deal?: Deal;
 }
 
-interface State {
-    deal?: Deal;
-}
-
-class DealComponent extends React.Component<Props, State> {
+class DealComponent extends React.Component<Props> {
     constructor(props: Props) {
         super(props);
         this.state = {...props};
     }
 
     render() {
-        const { deal } = this.state;
+        const { deal } = this.props;
         return (
             <div className="container-fluid">
                 <div className="row justify-content-end">
@@ -30,8 +26,8 @@ class DealComponent extends React.Component<Props, State> {
                         <div>{deal?.customerEmail}</div>
                     </div>
                 </div>
-                <div className="row mt-4">
-                    <div className="col">
+                <div className="row mt-4 justify-content-start">
+                    <div className="col-6">
                         {deal?.chantierAddress.address},
                         {deal?.chantierAddress.city},
                         {deal?.chantierAddress.postalCode}

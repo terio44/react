@@ -1,18 +1,28 @@
 import React from "react";
 import {Devis} from "../types/devis";
+import {DisplayedValues} from "../types/layout";
 
 interface Props {
-    devis?: Devis | null;
+    devis: Devis;
 }
 
 interface State {
-    devis?: Devis | null;
+    totalValues: {[K: string]: number},
 }
 
 class FooterComponent extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props);
-        this.state = {...props};
+        this.state = {
+            totalValues: {
+                prixTotalHTAvantRemise: props.devis.prixTotalHTAvantRemise,
+                montantRemise: props.devis.montantRemise,
+                prixTotalHT: props.devis.prixTotalHT,
+                prixTotalTTC: props.devis.prixTotalTTC,
+                prixTotalFreeTTC: props.devis.prixTotalFreeTTC,
+                prixTotalFournitureHT: props.devis.prixTotalFournitureHT
+            }
+        };
     }
 
     static getDisplayedValues() {
@@ -22,25 +32,22 @@ class FooterComponent extends React.Component<Props, State> {
             prixTotalHT: 'Prix Total HT',
             prixTotalTTC: 'Prix Total TTC',
             prixTotalFreeTTC: 'Prix Total Free TTC',
-            prixTotalFournitureHT: 'Prix Total Fourniture HT',
-            tauxTVA: 'Taux TVA',
-            montantTVA: 'Montant TVA',
-            prixTTC: 'Prix TTC'
-        }
+            prixTotalFournitureHT: 'Prix Total Fourniture HT'
+        } as DisplayedValues;
     }
 
     render() {
-        const { devis } = this.state as any;
-        const displayedValues = FooterComponent.getDisplayedValues() as any;
+        const { totalValues} = this.state;
+        const displayedValues = FooterComponent.getDisplayedValues();
         return (
             <div className="container">
                 <div className="row mt-4 justify-content-end">
                    <div className="col-6 list-group">
                    {
                         Object.keys(displayedValues).map((key, index) => {
-                            return <div className="row">
+                            return <div key={key} className="row">
                                 <span className="col-6 list-group-item">{displayedValues[key]}</span>
-                                <span className="col-6 list-group-item">{devis[key]}</span>
+                                <span className="col-6 list-group-item">{totalValues[key]}</span>
                             </div>
                         })
                    }
